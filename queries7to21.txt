@@ -1,0 +1,44 @@
+Q.7 List names of all customers matched with the salespeople serving them.
+select a.cname,b.sname from customer a, salespeople b where a.snum=b.snum;
+
+Q.8 Find the names and numbers of all salespeople who had more than one customer.
+select a.sname, a.snum, count(*) 'count' from salespeople a, customer b where a.snum = b.snum group by a.snum having count>1;
+
+Q.9 Count the orders of each of the salespeople and output the results in descending order.
+select b.snum, count(*) 'count' from orders a, customer b where a.cnum=b.cnum group by b.snum order by count desc;
+
+Q.10 List the Customer table if and only if one or more of the customers in the Customer table are
+located in San Jose.
+select * from customer where exists (select * from customer where city = 'San Jose');
+
+Q.11 Match salespeople to customers according to what city they lived in.
+select a.cname, a.city, b.sname, b.city from customer a, salespeople b where a.city = b.city;
+
+Q.12 Find the largest order taken by each salesperson.
+select b.snum, max(a.amt) from orders a, customer b where a.cnum=b.cnum group by b.snum;
+
+Q.13 Find customers in San Jose who have a rating above 200.
+select * from customer where city='San Jose' and rating>200;
+
+Q.14 List the names and commissions of all salespeople in London.
+select sname, comm from salespeople where city='London';
+
+Q.15 List all the orders of salesperson Motika from the Orders table.
+select a.onum,a.amt,a.odate,a.cnum from orders a, customer b where a.cnum=b.cnum and b.snum=(select snum from salespeople where sname = 'Motika');
+
+Q.16 Find all customers with orders on October 3.
+select a.cname from customer a, orders b where a.cnum=b.cnum and b.odate='1996-10-03';
+
+Q.17 Give the sums of the amounts from the Orders table, grouped by date, eliminating all those
+dates where the SUM was not at least 2000.00 above the MAX amount.
+select odate, sum(amt) 'sumamt' from orders a group by odate having sumamt > ((select max(amt) from orders x where x.odate = a.odate group by odate) + 2000);
+
+Q.18 Select all orders that had amounts that were greater than at least one of the orders from
+October 6.
+select * from orders where amt > (select min(amt) from orders where odate='1996-10-06');
+
+Q.20 Find all pairs of customers having the same rating.
+select a.cname,b.cname from customer a, customer b where a.rating = b.rating and a.cname!=b.cname;
+
+Q.21 Find all customers whose CNUM is 1000 above the SNUM of Serres.
+select * from customer where cnum > ((select snum from salespeople where sname='Serres') + 1000);
