@@ -37,6 +37,10 @@ Q.18 Select all orders that had amounts that were greater than at least one of t
 October 6.
 select * from orders where amt > (select min(amt) from orders where odate='1996-10-06');
 
+Q.19 Write a query that uses the EXISTS operator to extract all salespeople who have customers
+with a rating of 300.
+select a.snum,b.sname from customer a, salespeople b where exists (select * from customer where rating=300) and rating=300 and a.snum=b.snum;
+
 Q.20 Find all pairs of customers having the same rating.
 select a.cname,b.cname from customer a, customer b where a.rating = b.rating and a.cname!=b.cname;
 
