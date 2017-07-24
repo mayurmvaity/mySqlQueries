@@ -62,6 +62,10 @@ Q.54 answer2
 select * from orders where (odate = '1996-10-04' or odate = '1996-10-03');
 
 
+Q.55 Write a query that produces all pairs of orders by a given customer. Name that customer and eliminate duplicates.
+select b.cname, a.onum, a.amt, a.odate from orders a, customer b where a.cnum=b.cnum;
+
+
 Q.56 Find only those customers whose ratings are higher than every customer in Rome.
 select * from customer where rating > all (select rating from customer where city = 'Rome');
 
@@ -73,5 +77,10 @@ select * from customer where rating >100 or city ='Rome';
 Q.58 Find all rows from the Customers table for which the salesperson number is 1001.
 select * from customer where snum=1001;
 
+
 Q.59 Find the total amount in Orders for each salesperson for whom this total is greater than the amount of the largest order in the table.
 select b.snum, sum(a.amt) 'total' from orders a, customer b where a.cnum=b.cnum group by b.snum having total > (select max(amt) from orders);
+
+
+Q.60 Write a query that selects all orders save those with zeroes or NULLs in the amount field.
+select * from orders where (amt is not null or amt != 0);

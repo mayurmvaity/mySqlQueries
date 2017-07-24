@@ -11,7 +11,7 @@ select a.cname, a.city from customer a where rating = (select rating from custom
 
 
 Q.64 Find all salespeople for whom there are customers that follow them in alphabetical order.
-select distinct(a.sname) from salespeople a, customer b where b.snum=a.snum and a.sname < b.cname;
+select distinct(a.sname) from salespeople a, customer b where b.snum=a.snum and substring(a.sname,1,1) < substring(b.cname,1,1);
 
 
 Q.65 Write a query that produces the names and ratings of all customers of all who have above average orders.
@@ -66,3 +66,16 @@ Q.77 Find all salespeople who have customers with more than one current order.
 select distinct(c.snum), c.sname from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by a.cnum having count(*) > 1;
 
 
+Q.78 Write a query that extracts from the Customers table every customer assigned to a
+salesperson who currently has at least one other customer (besides the customer being
+selected) with orders in the Orders table.
+select x.cnum, y.onum from customer x, orders y where x.cnum=y.cnum and (select count(*) 'count' from salespeople a, customer b where a.snum=b.snum and a.snum =x.snum group by a.snum having count>1);
+
+
+Q.79 Write a query that selects all customers whose names begin with 'C'.
+select * from customer where cname like 'C%';
+
+
+Q.80 Write a query on the Customers table that will find the highest rating in each city. Put the output
+in this form : for the city (city) the highest rating is : (rating).
+select city, max(rating) 'rating' from customer group by city;
