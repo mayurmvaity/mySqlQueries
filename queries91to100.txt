@@ -1,0 +1,55 @@
+Q.91 Find the average amount from the Orders table.
+select avg(amt) from orders;
+
+
+Q.92 What would be the output from the following query?
+SELECT * FROM ORDERS
+WHERE NOT (odate = 10/03/96 OR snum > 1006) AND amt >=
+1500);
+
+select * from orders where not (odate= 10/03/96 OR snum > 1006) and amt >= 1500;
+
+OUTPUT:
+mysql> select * from orders where not (odate= 10/03/96 OR snum > 1006) and amt >= 1500;
+ERROR 1054 (42S22): Unknown column 'snum' in 'where clause'
+
+
+Q.93 Find all customers who are not located in San Jose and whose rating is above 200.
+select * from customer where city != 'San Jose' and rating > 200;
+
+
+Q.94 Give a simpler way to write this query :
+SELECT snum, sname city, comm FROM salespeople
+WHERE (comm > + 0.12 OR comm < 0.14);
+
+select * from salespeople;
+
+Q.95 Evaluate the following query :
+SELECT * FROM orders
+WHERE NOT ((odate = 10/03/96 AND snum > 1002) OR amt > 2000.00);
+
+select * from orders where not ((odate=10/03/96 and snum > 1002 ) or amt > 2000.00);
+
+OUTPUT:
+mysql> select * from orders where not ((odate=10/03/96 and snum > 1002 ) or amt > 2000.00);
+ERROR 1054 (42S22): Unknown column 'snum' in 'where clause'
+
+
+Q.96 Which salespersons attend to customers not in the city they have been assigned to?
+select b.sname from customer a, salespeople b where a.snum=b.snum and a.city!=b.city;
+
+
+Q.97 Which salespeople get commission greater than 0.11 are serving customers rated less than 250?
+select distinct(a.sname) from salespeople a, customer b where a.snum=b.snum and a.comm > 0.11 and b.rating < 250;
+
+
+Q.98 Which salespeople have been assigned to the same city but get different commission percentages?
+select a.sname, b.sname from salespeople a, salespeople b where a.city = b.city and a.comm!=b.comm;
+
+
+Q.99 Which salesperson has earned the most by way of commission?
+select b.snum, c.sname, sum(c.comm*a.amt) 'commission' from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by b.snum order by commission desc limit 1;
+
+
+Q.100 Does the customer who has placed the maximum number of orders have the maximum rating?
+select b.cnum, b.cname, count(*) 'kount' from orders a, customer b where a.cnum=b.cnum and b.rating = (select max(rating) from customer) group by b.cnum having kount = (select count(*) 'count' from orders a, customer b where a.cnum=b.cnum group by b.cnum order by count desc limit 1);

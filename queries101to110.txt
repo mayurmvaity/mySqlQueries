@@ -1,0 +1,40 @@
+Q.101 Has the customer who has spent the largest amount of money been given the highest rating?
+select m.cnum, m.rating, sum(n.amt) 'totalq' from orders n, customer m where n.cnum=m.cnum and rating=(select max(z.rating) from customer z) group by m.cnum having totalq = (select max(x.total) from (select b.cnum, sum(a.amt) 'total' from orders a, customer b where a.cnum=b.cnum group by b.cnum) x);
+
+
+Q.102 List all customers in descending order of customer rating.
+select * from customer order by rating desc;
+
+
+Q.103 On which days has Hoffman placed orders?
+select b.cnum, a.odate from orders a, customer b where a.cnum=b.cnum and b.cname = 'Hoffman';
+
+
+Q.104 Do all salespeople have different commissions?
+select "yes" as "output" from dual where (select count(*) from salespeople) = (select count(distinct(comm)) from salespeople)
+UNION
+select "no" from dual where (select count(*) from salespeople) != (select count(distinct(comm)) from salespeople);
+
+
+Q.105 Which salespeople have no orders between 10/03/1996 and 10/05/1996?
+select * from orders m, customer n where m.cnum=n.cnum and n.snum not in (select distinct(b.snum) from orders a, customer b where a.cnum=b.cnum and a.odate between '1996-10-03' and '1996-10-05');
+
+
+Q.106 How many salespersons have succeeded in getting orders?
+select count(distinct(b.snum)) from orders a, customer b where a.cnum=b.cnum;
+
+
+Q.107 How many customers have placed orders?
+select count(distinct(cnum)) from orders;
+
+
+Q.108 On which date has each salesperson booked an order of maximum value?
+select r.snum, r.sname, p.amt, p.odate from orders p, customer q, salespeople r where p.cnum=q.cnum and q.snum=r.snum and p.amt = (select max(a.amt) from orders a, customer b where a.cnum=b.cnum and b.snum=r.snum);
+
+
+Q.109 Who is the most successful salesperson?
+select b.snum,  c.sname, sum(a.amt) 'total' from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by b.snum order by total desc limit 1;
+
+
+Q.110 Who is the worst customer with respect to the company?
+select b.cnum, b.cname, sum(a.amt) 'total' from orders a, customer b where a.cnum=b.cnum group by b.cnum order by total asc limit 1;

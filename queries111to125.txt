@@ -1,0 +1,62 @@
+Q.111 Are all customers not having placed orders greater than 200 totally been serviced by salespersons Peel or Serres?
+select a.onum, a.amt, c.sname from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum and a.amt > 200;
+
+
+Q.112 Which customers have the same rating?
+select a.cname, b.cname from customer a, customer b where a.rating=b.rating and a.cnum!=b.cnum;
+
+
+Q.113 Find all orders greater than the average for October 4th.
+select a.onum, a.amt from orders a where a.amt > (select avg(amt) from orders where odate='1996-10-04');
+
+
+Q.114 Which customers have above average orders?
+select distinct(a.cnum), b.cname from orders a, customer b where a.cnum=b.cnum and a.amt > (select avg(amt) from orders);
+
+
+Q.115 List all customers with ratings above San Jose’s average.
+select a.cname, a.rating from customer a where a.rating > (select avg(rating) from customer where city='San Jose');
+
+
+Q.116 Select the total amount in orders for each salesperson for whom the total is greater than the amount of the largest order in the table.
+select b.snum, c.sname, sum(a.amt) 'sum' from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by b.snum having sum > (select max(amt) from orders);
+
+
+Q.117 Give names and numbers of all salespersons who have more than one customer.
+select b.snum, b.sname, count(*) 'customers' from customer a, salespeople b where a.snum=b.snum group by b.snum having customers > 1;
+
+
+Q.118 Select all salespersons by name and number who have customers in their city whom they don’t service.
+select distinct(b.snum), b.sname from customer a, salespeople b where a.snum!=b.snum and a.city=b.city;
+
+
+Q.119 Which customers’ rating should be lowered?
+select c.snum, c.sname, sum(a.amt) from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by c.snum;
+
+
+Q.120 Is there a case for assigning a salesperson to Berlin?
+select "Yes" as "output" from dual where exists (select * from customer a, salespeople b where a.snum=b.snum and a.city='Berlin')
+UNION
+select "No" from dual where not exists (select * from customer a, salespeople b where a.snum=b.snum and a.city='Berlin');
+
+
+Q.121 Is there any evidence linking the performance of a salesperson to the commission that he or she is being paid?
+select b.snum, sum(a.amt), c.comm from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by b.snum;
+
+
+Q.122 Does the total amount in orders by customer in Rome and London exceed the commission paid to salespersons in London and New York by more than 5 times?
+select "Yes" as "Output" from dual where (select sum(amt) 'total' from orders a, customer b where a.cnum=b.cnum and b.city in ('London', 'Rome')) > 5*(select sum(a.amt*c.comm) from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum and c.city in ('London','New York'))
+UNION
+select "No" from dual where (select sum(amt) 'total' from orders a, customer b where a.cnum=b.cnum and b.city in ('London', 'Rome')) <= 5*(select sum(a.amt*c.comm) from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum and c.city in ('London','New York'));
+
+
+Q.123 Which is the date, order number, amt and city for each salesperson (by name) for the maximum order he has obtained?
+select c.snum, c.sname, a.odate, a.onum, a.amt, c.city from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum and a.amt = (select max(n.amt) from orders n, customer m where n.cnum=m.cnum and m.snum = c.snum group by m.snum);
+
+
+Q.124 Which salesperson(s) should be fired?
+select c.snum, c.sname, sum(a.amt) from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by c.snum;
+
+
+Q.125 What is the total income for the company?
+select sum(amt) 'total amt' from orders;
